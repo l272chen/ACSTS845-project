@@ -17,7 +17,7 @@ library(rugarch)
 # -- Load in the data -- #
 # for now we'll just use a single set for testing out the r code
 
-ticker<- "MSFT"
+ticker<- "BAC"
 getSymbols(Symbols=c(ticker),
         from="2000-01-01",
         to="2016-12-01",
@@ -25,7 +25,7 @@ getSymbols(Symbols=c(ticker),
 
 
 # Also we're concerned with the log returns of the adjusted close
-returns <- dailyReturn(MSFT$MSFT.Adjusted,type="log")
+returns <- dailyReturn(BAC$BAC.Adjusted,type="log")
 
 
 
@@ -56,16 +56,14 @@ forecasts.list.student <- as.list(rep(NA,4))
 for( i in 1:(length(models.norm))){
   forecasts.list.norm[[i]]<- ugarchroll(spec=models.norm[[i]],data=returns,n.ahead = 1,
                                 refit.every = 1, refit.window ="moving",n.start =window.size,
-                                window.size=window.size,VaR.alpha = alpha.levels,
-                                keep.coef = FALSE)
+                                window.size=window.size,VaR.alpha = alpha.levels)
   print(paste("Completed normal forecast for model", i))
 }
 
 for( i in 1:(length(models.student))){
   forecasts.list.student[[i]]<- ugarchroll(spec=models.student[[i]],data=returns,n.ahead = 1,
                                         refit.every = 1, refit.window ="moving",n.start =window.size,
-                                        window.size=window.size,VaR.alpha = alpha.levels,
-                                        keep.coef = FALSE)
+                                        window.size=window.size,VaR.alpha = alpha.levels)
   print(paste("Completed student's t forecast for model", i))
 }
 
