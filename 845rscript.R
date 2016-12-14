@@ -12,7 +12,7 @@ rm(list=ls())
 # -- Load in required libraries -- #
 library(quantmod) #used to fetch the data
 library(rugarch)
-library(parallel) #used ot run the code in parallel
+library(parallel) #used to run the code in parallel
 
 # -- Load in the data -- #
 # for now we'll just use a single set for testing out the r code
@@ -26,7 +26,7 @@ prices<-getSymbols(Symbols=c(ticker),
 
 
 # Also we're concerned with the log returns of the adjusted close
-returns <- dailyReturn(IBM$IBM.Adjusted,type="log")
+returns <- dailyReturn(prices,type="log")
 
 
 
