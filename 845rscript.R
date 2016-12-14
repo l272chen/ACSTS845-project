@@ -12,20 +12,21 @@ rm(list=ls())
 # -- Load in required libraries -- #
 library(quantmod) #used to fetch the data
 library(rugarch)
-
+library(parallel) #used ot run the code in parallel
 
 # -- Load in the data -- #
 # for now we'll just use a single set for testing out the r code
 
-ticker<- "BAC"
-getSymbols(Symbols=c(ticker),
-        from="2000-01-01",
+ticker<- "IBM"
+prices<-getSymbols(Symbols=c(ticker),
+        from="2001-01-01",
         to="2016-12-01",
-        src="yahoo")
+        src="yahoo",
+        env=NULL)[,6]
 
 
 # Also we're concerned with the log returns of the adjusted close
-returns <- dailyReturn(BAC$BAC.Adjusted,type="log")
+returns <- dailyReturn(IBM$IBM.Adjusted,type="log")
 
 
 
@@ -53,19 +54,29 @@ forecasts.list.student <- as.list(rep(NA,4))
 
 #-- Rolling forecasts  --#
 
+#first set up the parallel code
+no_cores <- detectCores() - 1 # save a core for the rest of your computer
+# Initiate cluster
+cl <- makeCluster(no_cores)
+
 for( i in 1:(length(models.norm))){
   forecasts.list.norm[[i]]<- ugarchroll(spec=models.norm[[i]],data=returns,n.ahead = 1,
                                 refit.every = 1, refit.window ="moving",n.start =window.size,
-                                window.size=window.size,VaR.alpha = alpha.levels)
+                                window.size=window.size,VaR.alpha = alpha.levels,
+                                cluster=cl)
   print(paste("Completed normal forecast for model", i))
 }
 
 for( i in 1:(length(models.student))){
   forecasts.list.student[[i]]<- ugarchroll(spec=models.student[[i]],data=returns,n.ahead = 1,
                                         refit.every = 1, refit.window ="moving",n.start =window.size,
-                                        window.size=window.size,VaR.alpha = alpha.levels)
+                                        window.size=window.size,VaR.alpha = alpha.levels,
+                                        cluster=cl)
   print(paste("Completed student's t forecast for model", i))
 }
+
+#remember to stop the cluster 
+stopCluster(cl)
 
 #-- Save the results --##
 saveRDS(forecasts.list.norm, paste0("normal-",ticker, ".rds"))
