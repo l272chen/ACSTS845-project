@@ -15,15 +15,16 @@ library(rugarch)
 library(parallel) #used to run the code in parallel
 
 # -- Load in the data -- #
-# for now we'll just use a single set for testing out the r code
+setwd("/home/andrew/Documents/school/845/project/ACSTS845-project")
 
-ticker<- "IBM"
-prices<-getSymbols(Symbols=c(ticker),
-        from="2001-01-01",
-        to="2016-12-01",
-        src="yahoo",
-        env=NULL)[,6]
-
+ticker<- "COM-SOYB_MEAL"
+#prices<-getSymbols(Symbols=c(ticker),
+#        from="2004-01-01",
+#        to="2016-12-01",
+#        src="yahoo",
+#        env=NULL)[,6]
+price.df <-read.csv(paste0(ticker, ".csv"))
+prices <- xts(price.df$Value, order.by = as.POSIXct( price.df$Date)  )
 
 # Also we're concerned with the log returns of the adjusted close
 returns <- dailyReturn(prices,type="log")
