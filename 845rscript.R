@@ -6,7 +6,7 @@
 
 
 # begin by clearing our workspace
-rm(list=ls())
+rm(list=ls()) 
 
 
 # -- Load in required libraries -- #
@@ -17,9 +17,9 @@ library(parallel) #used to run the code in parallel
 # -- Load in the data -- #
 # for now we'll just use a single set for testing out the r code
 
-ticker<- "IBM"
+ticker<- "JPY=X"
 prices<-getSymbols(Symbols=c(ticker),
-        from="2001-01-01",
+        from="2004-01-01",
         to="2016-12-01",
         src="yahoo",
         env=NULL)[,6]

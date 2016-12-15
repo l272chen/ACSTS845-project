@@ -23,7 +23,7 @@ forecasts.list<- readRDS("normal-MSFT.rds")
 alpha.levels <- c(0.005,0.01,0.05,0.10)
 
 
-violations <- forecasts.list[[1]]@forecast$VaR >forecasts.list[[1]]@forecast$VaR[,"realized"]
+violations <- forecasts.list[[3]]@forecast$VaR >forecasts.list[[3]]@forecast$VaR[,"realized"]
 colSums(violations)/ dim(violations)[1]
 
 
@@ -31,4 +31,4 @@ for (i in 1:(length(alpha.levels))){
   report(forecasts.list[[4]], type="VaR", VaR.alpha = alpha.levels[i], conf.level = 0.95) 
 }
 
-
+forecasts.list[[4]]@model$coef
