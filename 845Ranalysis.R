@@ -18,7 +18,7 @@ library(rugarch)
 
 
 # load in our previously computed forecast
-forecasts.list<- readRDS("student-CAD=X.rds")
+forecasts.list<- readRDS("student-COM-SOYB_MEAL.rds")
 
 #initialize variables
 alpha.levels <- c(0.005,0.01,0.05,0.10)
@@ -29,7 +29,7 @@ alpha.levels <- c(0.005,0.01,0.05,0.10)
 
 #Note 1: ARCH(1), 2:GARCH(1,1) , 3:ARMAGARCH , 4: EGARCH
 for (i in 1:(length(alpha.levels))){
-  report(forecasts.list[[]], type="VaR", VaR.alpha = alpha.levels[i], conf.level = 0.95) 
+  report(forecasts.list[[4]], type="VaR", VaR.alpha = alpha.levels[i], conf.level = 0.95) 
 }
 
 
@@ -59,10 +59,14 @@ for (i in 1:4){
     print("all windows converge")
   }
 }
+
+
+
+summary(forecasts.list[[4]]@forecast[[1]])
 test <- forecasts.list[[2]]
 test <- forecasts.list[[2]]@forecast[setdiff(1:(length(forecasts.list[[2]]@forecast)) ,attributes(convergence(forecasts.list[[2]]))$nonconverged)]
 
-forecasts.list[[2]]@forecast$VaR
+forecasts.list[[2]]@forecast
 test
 
 test@model$noncidx <-as.vector(NULL)
